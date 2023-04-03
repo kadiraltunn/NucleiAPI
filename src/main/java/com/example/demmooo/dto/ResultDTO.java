@@ -1,5 +1,6 @@
 package com.example.demmooo.dto;
 
+import com.example.demmooo.model.ResultEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +19,12 @@ public class ResultDTO
     private String severity;
     private String cwe_id;
 
-
+    public ResultDTO(ResultEntity resultEntity){
+        this.id = resultEntity.getId();
+        this.name = resultEntity.getName();
+        this.type = resultEntity.getType();
+        this.description = resultEntity.getDescription();
+        this.severity = resultEntity.getSeverity();
+        this.cwe_id = resultEntity.getCweId();
+    }
 }

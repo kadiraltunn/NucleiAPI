@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ListResultService {
@@ -42,15 +43,21 @@ public class ListResultService {
             lst.add(resultDTO);
         });
 
-        return lst;
+         return lst;
     }
 
 
-    public Iterable<ResultEntity> getAllResultsByScanId(Long scanId) {
-        List<ScannedResponseDTO> scannedResponseDTOList = scannedRepository.findByScanEntityId(scanId).stream().map(scannedEntity ->
-                new ScannedResponseDTO(scannedEntity)).collect(Collectors.toList());
-        return resultRepository.findAllById(scannedResponseDTOList.stream().map(scannedResponseDTO ->
-                scannedResponseDTO.getVulnId()).collect(Collectors.toList()));
+    public Iterable<ResultDTO> getAllResultsByScanId(Long scanId) {
+        List<ScannedResponseDTO> scannedResponseDTOList = scannedRepository.findByScanEntityId(scanId).stream()
+                .map(scannedEntity -> new ScannedResponseDTO(scannedEntity))
+                .collect(Collectors.toList());
+        Iterable<ResultEntity> vulnIds = resultRepository.findAllById(scannedResponseDTOList.stream()
+                .map(scannedResponseDTO -> scannedResponseDTO.getVulnId())
+                .collect(Collectors.toList()));
+        return StreamSupport.stream(vulnIds.spliterator(), false)
+                .map(ResultDTO::new)
+                .collect(Collectors.toList());
+
 
     }
 }

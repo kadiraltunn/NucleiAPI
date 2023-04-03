@@ -1,6 +1,7 @@
 package com.example.demmooo.controller;
 
 import com.example.demmooo.dto.ResponseDTO;
+import com.example.demmooo.dto.ResultDTO;
 import com.example.demmooo.dto.ScanDTO;
 import com.example.demmooo.model.ResultEntity;
 import com.example.demmooo.service.ScanService;
@@ -31,7 +32,7 @@ public class NucleiController
     }
 
     @GetMapping("/{scanId}")
-    public Iterable<ResultEntity> getAllResults(@PathVariable Long scanId) {
+    public Iterable<ResultDTO> getAllResults(@PathVariable Long scanId) {
         return resultService.getAllResultsByScanId(scanId);
     }
     
