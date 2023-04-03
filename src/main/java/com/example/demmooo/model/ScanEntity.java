@@ -8,6 +8,6 @@ import lombok.Data;
 public class ScanEntity extends BaseEntity
 {
     private String target;
-    private String scan_name;
+    private String scanName;
 
 }

@@ -1,48 +1,38 @@
 package com.example.demmooo.controller;
 
 import com.example.demmooo.dto.ResponseDTO;
-import com.example.demmooo.dto.ResultDTO;
 import com.example.demmooo.dto.ScanDTO;
 import com.example.demmooo.model.ResultEntity;
-import com.example.demmooo.service.CreateNucleiService;
-import com.example.demmooo.service.JsonPartition;
+import com.example.demmooo.service.ScanService;
 import com.example.demmooo.service.ListResultService;
-import com.example.demmooo.service.NucleiMainService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import java.io.IOException;
-import java.util.List;
 
-@Controller
+import java.io.IOException;
+
+@RestController
 @RequestMapping("/nuclei")
 public class NucleiController
 {
-    @Autowired
+    private ScanService scanService;
+
     private ListResultService resultService;
 
-    @Autowired
-    private CreateNucleiService nucleiService;
-
-    @Autowired
-    private NucleiMainService nucleiMainService;
-
-    @Autowired
-    private JsonPartition jsonPartition;
+    public NucleiController(ScanService scanService, ListResultService resultService) {
+        this.scanService = scanService;
+        this.resultService = resultService;
+    }
 
     @PostMapping("/create-nuclei")
     @ResponseBody
     public ResponseDTO createNuclei(@RequestBody ScanDTO scanDTO) throws IOException, InterruptedException {
-        nucleiMainService.nucleiMain(scanDTO);
-        nucleiService.createScan(scanDTO);
-        jsonPartition.JsonPartition(scanDTO);
+        scanService.createScan(scanDTO);
         ResponseDTO res = new ResponseDTO(true);
         return res;
     }
 
-    @GetMapping(value = "/{id}")
-    private Object getResultById(@PathVariable("id") Long id){
-
-        return resultService.resultList(id);
+    @GetMapping("/{scanId}")
+    public Iterable<ResultEntity> getAllResults(@PathVariable Long scanId) {
+        return resultService.getAllResultsByScanId(scanId);
     }
+    
 }

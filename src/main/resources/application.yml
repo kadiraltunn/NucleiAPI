@@ -16,5 +16,6 @@ spring:
           time_zone: GMT+3
         dialect: org.hibernate.dialect.MySQL8Dialect
         enable_lazy_load_no_trans: true
+
 server:
   port: 80

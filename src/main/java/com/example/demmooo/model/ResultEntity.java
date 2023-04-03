@@ -8,13 +8,14 @@ import lombok.Data;
 public class ResultEntity
 {
     @Id
-    private  long vuln_id;
+    private long id;
 
     private String name;
     private String type;
+    @Column(columnDefinition = "text")
     private String description;
     private String severity;
-    private String cwe_id;
+    private String cweId;
 
 
 }
