@@ -26,10 +26,11 @@ public class ResultService {
 
     public void jsonPartition(ScanDTO scanDTO, ScanEntity scanEntity) throws InterruptedException, IOException {
         Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
-                "pscp -pw kali kali@192.168.1.101:/home/kali/Results1.txt C:\\Users\\qkado\\Desktop\\"});
+                "pscp -pw kali kali@192.168.1.101:/home/kali/Results.txt C:\\Users\\qkado\\Desktop\\"});
         p1.waitFor();
 
-        File f = new File("C:\\Users\\qkado\\Desktop\\Results1.txt");
+
+        File f = new File("C:\\Users\\qkado\\Desktop\\Results.txt");
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
             String line;
@@ -85,6 +86,13 @@ public class ResultService {
         } catch (Exception e) {
             System.out.println("Hata oluştu. " + e.getMessage());
         }
+    }
+
+
+    public void deleteCaches() throws IOException, InterruptedException {
+        Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
+                "del C:\\Users\\qkado\\Desktop\\Results.txt"});
+        p1.waitFor();
     }
 }
 

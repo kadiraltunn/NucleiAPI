@@ -9,7 +9,5 @@ import java.util.List;
 @Repository
 public interface ScannedRepository extends CrudRepository<ScannedEntity, Long>
 {
-    List<ScannedEntity> getAllByScanEntity(long id);
-
     List<ScannedEntity> findByScanEntityId(Long scanId);
 }

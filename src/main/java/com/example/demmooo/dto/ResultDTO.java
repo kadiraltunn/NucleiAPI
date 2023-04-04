@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -27,4 +29,5 @@ public class ResultDTO
         this.severity = resultEntity.getSeverity();
         this.cwe_id = resultEntity.getCweId();
     }
+
 }
