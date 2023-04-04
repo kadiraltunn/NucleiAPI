@@ -80,7 +80,9 @@ public class ResultService {
                 scanned.setResultEntity(resultEntity);
                 scannedRepository.save(scanned);
             }
-
+            br.close();
+            p1.destroy();
+            deleteCaches();
         } catch (IOException io) {
             System.out.println("SFTP sunucusundan dosya okunurken istisna oluştu: " + io.getMessage());
         } catch (Exception e) {
@@ -90,9 +92,9 @@ public class ResultService {
 
 
     public void deleteCaches() throws IOException, InterruptedException {
-        Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
+        Process p2 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
                 "del C:\\Users\\qkado\\Desktop\\Results.txt"});
-        p1.waitFor();
+        p2.waitFor();
     }
 }
 
