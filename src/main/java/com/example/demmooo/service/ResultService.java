@@ -1,49 +1,114 @@
 package com.example.demmooo.service;
 
+import com.example.demmooo.dto.ResultDTO;
+import com.example.demmooo.dto.ResultWithScanDTO;
 import com.example.demmooo.dto.ScanDTO;
+import com.example.demmooo.dto.ScannedResponseDTO;
 import com.example.demmooo.model.ResultEntity;
 import com.example.demmooo.model.ScanEntity;
-import com.example.demmooo.model.ScannedEntity;
 import com.example.demmooo.repository.ResultRepository;
-import com.example.demmooo.repository.ScannedRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ResultService {
+
+    private ScanService scanService;
+    private ScannedService scannedService;
     private ResultRepository resultRepository;
-    private ScannedRepository scannedRepository;
 
 
-    public ResultService(ResultRepository resultRepository, ScannedRepository scannedRepository) {
+    public ResultService(ScannedService scannedService, ResultRepository resultRepository) {
+        this.scannedService = scannedService;
         this.resultRepository = resultRepository;
-        this.scannedRepository = scannedRepository;
+    }
+
+    @Autowired
+    public void setScanService(ScanService scanService) {
+        this.scanService = scanService;
     }
 
 
-    public void jsonPartition(ScanDTO scanDTO, ScanEntity scanEntity) throws InterruptedException, IOException {
+    public ResultWithScanDTO getAllResultsByScanId(Long scanId) {
+        List<ScannedResponseDTO> scannedResponseDTOList = scannedService.findByScanId(scanId).stream()
+                .map(scannedEntity -> new ScannedResponseDTO(scannedEntity))
+                .collect(Collectors.toList());
+
+        Iterable<ResultEntity> vulnIds = resultRepository.findAllById(scannedResponseDTOList.stream()
+                .map(scannedResponseDTO -> scannedResponseDTO.getVulnId())
+                .collect(Collectors.toList()));
+
+        List<ResultDTO> resultDTOList = StreamSupport.stream(vulnIds.spliterator(), false)
+                .map(ResultDTO::new)
+                .collect(Collectors.toList());
+        return new ResultWithScanDTO(scanService.getOneScan(scanId), resultDTOList);
+    }
+
+
+    public List<ResultWithScanDTO> getAllResultsWithAllScansById() {
+        List<ScanEntity> scanEntityList = scanService.getAllScanEntity();
+        return scanEntityList.stream().map(scanEntity -> getAllResultsByScanId(scanEntity.getId())).collect(Collectors.toList());
+    }
+
+
+    public List<ResultDTO> getAllResults() {
+        return StreamSupport.stream(resultRepository.findAll().spliterator(), false)
+                .map(ResultDTO::new)
+                .collect(Collectors.toList());
+    }
+
+
+    public boolean getExistByResultId(Long id){
+        return resultRepository.existsById(id);
+    }
+
+
+    public void saveResults(ScanDTO scanDTO, ScanEntity scanEntity) throws InterruptedException, IOException {
         Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
                 "pscp -pw kali kali@192.168.1.101:/home/kali/Results.txt C:\\Users\\qkado\\Desktop\\"});
         p1.waitFor();
-
 
         File f = new File("C:\\Users\\qkado\\Desktop\\Results.txt");
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
             String line;
             while ((line = br.readLine()) != null) {
-                JSONObject json = new JSONObject(line);
+
                 ResultEntity resultEntity = new ResultEntity();
-                ScannedEntity scanned = new ScannedEntity();
+                JSONObject json = new JSONObject(line);
+
                 try {
+
                     String name = json.getJSONObject("info").get("name").toString();
                     resultEntity.setName(json.getJSONObject("info").get("name").toString());
+
+                    try {
+                        if (!json.isNull("matcher-name")) {
+                            String matcherName = json.get("matcher-name").toString();
+                            long id = (long) ((matcherName + resultEntity.getName()).hashCode());
+                            resultEntity.setId(id);
+                        } else if (!json.isNull("extracted-results")) {
+                            String extractedResults = json.getJSONArray("extracted-results").toString();
+                            long id = (long) ((extractedResults + resultEntity.getName()).hashCode());
+                            resultEntity.setId(id);
+                        } else {
+                            resultEntity.setId(resultEntity.getName().hashCode());
+                        }
+                    } catch (JSONException e) {
+                        resultEntity.setId(resultEntity.getName().hashCode());
+                    }
+                    /*
                     String time = json.get("timestamp").toString();
                     if (time.hashCode() > 0) resultEntity.setId(time.hashCode());
                     else resultEntity.setId(time.hashCode() * -1);
+                    */
                 } catch (JSONException e) {
                     resultEntity.setName("null");
                 }
@@ -75,10 +140,11 @@ public class ResultService {
                     resultEntity.setSeverity("null");
                 }
 
-                resultRepository.save(resultEntity);
-                scanned.setScanEntity(scanEntity);
-                scanned.setResultEntity(resultEntity);
-                scannedRepository.save(scanned);
+                if (!getExistByResultId(resultEntity.getId()))
+                    resultRepository.save(resultEntity);
+                if (!scannedService.getExistByResultIdAndScanId(resultEntity.getId(), scanEntity.getId())){
+                    scannedService.saveScanned(scanEntity, resultEntity);
+                }
             }
             br.close();
             p1.destroy();

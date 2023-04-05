@@ -10,4 +10,6 @@ import java.util.List;
 public interface ScannedRepository extends CrudRepository<ScannedEntity, Long>
 {
     List<ScannedEntity> findByScanEntityId(Long scanId);
+
+    boolean existsByResultEntityIdAndScanEntityId(long resultEntityId, Long scanEntityId);
 }

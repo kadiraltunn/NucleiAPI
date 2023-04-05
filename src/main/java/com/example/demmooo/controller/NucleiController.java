@@ -6,14 +6,13 @@ import com.example.demmooo.dto.ResultWithScanDTO;
 import com.example.demmooo.dto.ScanDTO;
 import com.example.demmooo.exception.NucleiException;
 import com.example.demmooo.model.ScanEntity;
+import com.example.demmooo.service.ResultService;
 import com.example.demmooo.service.ScanService;
-import com.example.demmooo.service.ListResultService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/nuclei")
@@ -21,10 +20,10 @@ public class NucleiController
 {
     private ScanService scanService;
 
-    private ListResultService resultService;
+    private ResultService resultService;
 
 
-    public NucleiController(ScanService scanService, ListResultService resultService) {
+    public NucleiController(ScanService scanService, ResultService resultService) {
         this.scanService = scanService;
         this.resultService = resultService;
     }
