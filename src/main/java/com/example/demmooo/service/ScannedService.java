@@ -23,12 +23,12 @@ public class ScannedService {
     }
 
 
-    public List<ScannedEntity> findByScanId(Long id){
+    public List<ScannedEntity> findScannedEntitiesByScanId(Long id){
         return scannedRepository.findByScanEntityId(id);
     }
 
 
-    public void saveScanned(ScanEntity scanEntity, ResultEntity resultEntity){
+    public void saveScannedEntity(ScanEntity scanEntity, ResultEntity resultEntity){
         ScannedEntity scannedEntity = new ScannedEntity();
         scannedEntity.setScanEntity(scanEntity);
         scannedEntity.setResultEntity(resultEntity);

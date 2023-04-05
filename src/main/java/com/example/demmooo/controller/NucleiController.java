@@ -2,7 +2,7 @@ package com.example.demmooo.controller;
 
 import com.example.demmooo.dto.ResponseDTO;
 import com.example.demmooo.dto.ResultDTO;
-import com.example.demmooo.dto.ResultWithScanDTO;
+import com.example.demmooo.dto.ScanWithResultsDTO;
 import com.example.demmooo.dto.ScanDTO;
 import com.example.demmooo.exception.NucleiException;
 import com.example.demmooo.model.ScanEntity;
@@ -33,37 +33,37 @@ public class NucleiController
     @PostMapping("/create-nuclei")
     @ResponseBody
     public ResponseDTO createNuclei(@RequestBody ScanDTO scanDTO) throws IOException, InterruptedException {
-        scanService.createScan(scanDTO);
+        scanService.startScanAndCreateScanEntity(scanDTO);
         return new ResponseDTO(true);
     }
 
     //TÜM TARAMALAR
     @GetMapping("/scans")
     public List<ScanDTO> getAllScans(){
-        return scanService.getAllScans();
+        return scanService.getAllScanDTOs();
     }
 
 
     //TÜM TARAMALAR VE SONUÇLARI
     @GetMapping("scans-with-results")
-    public List<ResultWithScanDTO> getAllResultsWithAllScans(){
-        return resultService.getAllResultsWithAllScansById();
+    public List<ScanWithResultsDTO> getAllScansWithAllResults(){
+        return resultService.getAllScanWithResultsDTOs();
     }
 
 
     //"X" NUMARALI TARAMA VE SONUÇLARI
     @GetMapping("/results/{scanId}")
-    public ResultWithScanDTO getResultsWithScan(@PathVariable Long scanId) {
-        ScanEntity scanEntity = scanService.getOneScan(scanId);
+    public ScanWithResultsDTO getScanWithResults(@PathVariable Long scanId) {
+        ScanEntity scanEntity = scanService.getOneScanById(scanId);
         if (scanEntity == null)
             throw new NucleiException();
-        return resultService.getAllResultsByScanId(scanId);
+        return resultService.getScanWithResultsDTOByScanId(scanId);
     }
 
     //TÜM SONUÇLAR
     @GetMapping("/results")
     public List<ResultDTO> getAllResults(){
-        return resultService.getAllResults();
+        return resultService.getAllResultDTOs();
     }
 
 

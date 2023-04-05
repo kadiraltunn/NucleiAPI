@@ -30,13 +30,13 @@ public class ScanService
     }
 
 
-    public void createScan(ScanDTO scanDTO) throws IOException, InterruptedException {
+    public void startScanAndCreateScanEntity(ScanDTO scanDTO) throws IOException, InterruptedException {
         ScanEntity scanEntity = new ScanEntity();
         scanEntity.setScanName(scanDTO.getScanName());
         scanEntity.setTarget(scanDTO.getTarget());
         scanRepository.save(scanEntity);
 
-
+/*
         Process p = Runtime.getRuntime().exec("cmd.exe /c plink kali@192.168.1.101 -pw kali -no-antispoof " +
                 "nuclei -u " + scanDTO.getTarget() + " -json -o /home/kali/Results.txt");
 
@@ -45,17 +45,17 @@ public class ScanService
                 new InputStreamReader(p.getInputStream()));
         String line;
         while ((line = is.readLine()) != null){}
-
+*/
         resultService.saveResults(scanDTO, scanEntity);
     }
 
 
-    public ScanEntity getOneScan(Long scanId){
+    public ScanEntity getOneScanById(Long scanId){
         return scanRepository.findById(scanId).orElse(null);
     }
 
 
-    public List<ScanDTO> getAllScans() {
+    public List<ScanDTO> getAllScanDTOs() {
         Iterable<ScanEntity> scanEntityIterable = scanRepository.findAll();
         return StreamSupport.stream(scanEntityIterable.spliterator(), false)
                 .map(scanEntity -> new ScanDTO(scanEntity))
@@ -63,7 +63,7 @@ public class ScanService
     }
 
 
-    public List<ScanEntity> getAllScanEntity() {
+    public List<ScanEntity> getAllScanEntities() {
         return StreamSupport.stream(scanRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }

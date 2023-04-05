@@ -1,7 +1,7 @@
 package com.example.demmooo.service;
 
 import com.example.demmooo.dto.ResultDTO;
-import com.example.demmooo.dto.ResultWithScanDTO;
+import com.example.demmooo.dto.ScanWithResultsDTO;
 import com.example.demmooo.dto.ScanDTO;
 import com.example.demmooo.dto.ScannedResponseDTO;
 import com.example.demmooo.model.ResultEntity;
@@ -36,8 +36,8 @@ public class ResultService {
     }
 
 
-    public ResultWithScanDTO getAllResultsByScanId(Long scanId) {
-        List<ScannedResponseDTO> scannedResponseDTOList = scannedService.findByScanId(scanId).stream()
+    public ScanWithResultsDTO getScanWithResultsDTOByScanId(Long scanId) {
+        List<ScannedResponseDTO> scannedResponseDTOList = scannedService.findScannedEntitiesByScanId(scanId).stream()
                 .map(scannedEntity -> new ScannedResponseDTO(scannedEntity))
                 .collect(Collectors.toList());
 
@@ -48,17 +48,17 @@ public class ResultService {
         List<ResultDTO> resultDTOList = StreamSupport.stream(vulnIds.spliterator(), false)
                 .map(ResultDTO::new)
                 .collect(Collectors.toList());
-        return new ResultWithScanDTO(scanService.getOneScan(scanId), resultDTOList);
+        return new ScanWithResultsDTO(scanService.getOneScanById(scanId), resultDTOList);
     }
 
 
-    public List<ResultWithScanDTO> getAllResultsWithAllScansById() {
-        List<ScanEntity> scanEntityList = scanService.getAllScanEntity();
-        return scanEntityList.stream().map(scanEntity -> getAllResultsByScanId(scanEntity.getId())).collect(Collectors.toList());
+    public List<ScanWithResultsDTO> getAllScanWithResultsDTOs() {
+        List<ScanEntity> scanEntityList = scanService.getAllScanEntities();
+        return scanEntityList.stream().map(scanEntity -> getScanWithResultsDTOByScanId(scanEntity.getId())).collect(Collectors.toList());
     }
 
 
-    public List<ResultDTO> getAllResults() {
+    public List<ResultDTO> getAllResultDTOs() {
         return StreamSupport.stream(resultRepository.findAll().spliterator(), false)
                 .map(ResultDTO::new)
                 .collect(Collectors.toList());
@@ -85,38 +85,36 @@ public class ResultService {
                 JSONObject json = new JSONObject(line);
 
                 try {
-
-                    String name = json.getJSONObject("info").get("name").toString();
                     resultEntity.setName(json.getJSONObject("info").get("name").toString());
-
-                    try {
-                        if (!json.isNull("matcher-name")) {
-                            String matcherName = json.get("matcher-name").toString();
-                            long id = (long) ((matcherName + resultEntity.getName()).hashCode());
-                            resultEntity.setId(id);
-                        } else if (!json.isNull("extracted-results")) {
-                            String extractedResults = json.getJSONArray("extracted-results").toString();
-                            long id = (long) ((extractedResults + resultEntity.getName()).hashCode());
-                            resultEntity.setId(id);
-                        } else {
-                            resultEntity.setId(resultEntity.getName().hashCode());
-                        }
-                    } catch (JSONException e) {
-                        resultEntity.setId(resultEntity.getName().hashCode());
-                    }
-                    /*
-                    String time = json.get("timestamp").toString();
-                    if (time.hashCode() > 0) resultEntity.setId(time.hashCode());
-                    else resultEntity.setId(time.hashCode() * -1);
-                    */
                 } catch (JSONException e) {
                     resultEntity.setName("null");
                 }
+
                 try {
-                    resultEntity.setType(json.get("type").toString());
+                    long id;
+                    if (!json.isNull("matcher-name")) {
+                        String matcherName = json.get("matcher-name").toString();
+                        id = (matcherName + resultEntity.getName()).hashCode();
+                    } else if (!json.isNull("extracted-results")) {
+                        String extractedResults = json.getJSONArray("extracted-results").toString();
+                        id = (extractedResults + resultEntity.getName()).hashCode();
+                    } else {
+                        id = resultEntity.getName().hashCode();
+                    }
+                    if (id > 0) resultEntity.setId(id);
+                    else resultEntity.setId(id * -1);
+                } catch (JSONException e) {
+                    resultEntity.setId(resultEntity.getName().hashCode());
+                }
+
+                try {
+                    if (!json.isNull("type"))
+                        resultEntity.setType(json.get("type").toString());
+                    else resultEntity.setType("null");
                 } catch (JSONException e) {
                     resultEntity.setType("null");
                 }
+
                 try {
                     String description = json.getJSONObject("info").get("description").toString();
                     description = description.replace("\n", "");
@@ -124,6 +122,7 @@ public class ResultService {
                 } catch (JSONException e) {
                     resultEntity.setDescription("null");
                 }
+
                 try {
                     String cwe_id = json.getJSONObject("info").getJSONObject("classification").getJSONArray("cwe-id").toString();
                     cwe_id = cwe_id.replace("[", "");
@@ -133,6 +132,7 @@ public class ResultService {
                 } catch (JSONException e) {
                     resultEntity.setCweId("null");
                 }
+
                 try {
                     String severity = json.getJSONObject("info").get("severity").toString();
                     resultEntity.setSeverity(severity);
@@ -143,7 +143,7 @@ public class ResultService {
                 if (!getExistByResultId(resultEntity.getId()))
                     resultRepository.save(resultEntity);
                 if (!scannedService.getExistByResultIdAndScanId(resultEntity.getId(), scanEntity.getId())){
-                    scannedService.saveScanned(scanEntity, resultEntity);
+                    scannedService.saveScannedEntity(scanEntity, resultEntity);
                 }
             }
             br.close();
