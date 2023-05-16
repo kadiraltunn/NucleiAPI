@@ -36,12 +36,15 @@ public class ResultService {
     }
 
 
-    public ScanWithResultsDTO getScanWithResultsDTOByScanId(Long scanId) {
-        List<ScannedResponseDTO> scannedResponseDTOList = scannedService.findScannedEntitiesByScanId(scanId).stream()
+    public ScanWithResultsDTO getScanWithResultsByScanId(Long scanId) {
+        List<ScannedResponseDTO> scannedResponseDTOList = scannedService
+                .findScannedEntitiesByScanId(scanId)
+                .stream()
                 .map(scannedEntity -> new ScannedResponseDTO(scannedEntity))
                 .collect(Collectors.toList());
 
-        Iterable<ResultEntity> vulnIds = resultRepository.findAllById(scannedResponseDTOList.stream()
+        Iterable<ResultEntity> vulnIds = resultRepository.findAllById(scannedResponseDTOList
+                .stream()
                 .map(scannedResponseDTO -> scannedResponseDTO.getVulnId())
                 .collect(Collectors.toList()));
 
@@ -52,13 +55,14 @@ public class ResultService {
     }
 
 
-    public List<ScanWithResultsDTO> getAllScanWithResultsDTOs() {
+    public List<ScanWithResultsDTO> getAllScanWithResults() {
         List<ScanEntity> scanEntityList = scanService.getAllScanEntities();
-        return scanEntityList.stream().map(scanEntity -> getScanWithResultsDTOByScanId(scanEntity.getId())).collect(Collectors.toList());
+        return scanEntityList.stream().map(scanEntity -> getScanWithResultsByScanId(scanEntity.getId()))
+                .collect(Collectors.toList());
     }
 
 
-    public List<ResultDTO> getAllResultDTOs() {
+    public List<ResultDTO> getAllResults() {
         return StreamSupport.stream(resultRepository.findAll().spliterator(), false)
                 .map(ResultDTO::new)
                 .collect(Collectors.toList());
@@ -72,7 +76,7 @@ public class ResultService {
 
     public void saveResults(ScanDTO scanDTO, ScanEntity scanEntity) throws InterruptedException, IOException {
         Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
-                "pscp -pw kali kali@192.168.1.101:/home/kali/Results.txt C:\\Users\\qkado\\Desktop\\"});
+                "pscp -pw kali kali@192.168.1.10:/home/kali/Results.txt C:\\Users\\qkado\\Desktop\\"});
         p1.waitFor();
 
         File f = new File("C:\\Users\\qkado\\Desktop\\Results.txt");
@@ -124,7 +128,8 @@ public class ResultService {
                 }
 
                 try {
-                    String cwe_id = json.getJSONObject("info").getJSONObject("classification").getJSONArray("cwe-id").toString();
+                    String cwe_id = json.getJSONObject("info").getJSONObject("classification")
+                            .getJSONArray("cwe-id").toString();
                     cwe_id = cwe_id.replace("[", "");
                     cwe_id = cwe_id.replace("]", "");
                     cwe_id = cwe_id.replace("\"", "");

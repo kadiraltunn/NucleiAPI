@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ScannedRepository extends CrudRepository<ScannedEntity, Long>
-{
+public interface ScannedRepository extends CrudRepository<ScannedEntity, Long> {
+
     List<ScannedEntity> findByScanEntityId(Long scanId);
 
     boolean existsByResultEntityIdAndScanEntityId(long resultEntityId, Long scanEntityId);
+
 }

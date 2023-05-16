@@ -36,16 +36,15 @@ public class ScanService
         scanEntity.setTarget(scanDTO.getTarget());
         scanRepository.save(scanEntity);
 
-/*
-        Process p = Runtime.getRuntime().exec("cmd.exe /c plink kali@192.168.1.101 -pw kali -no-antispoof " +
-                "nuclei -u " + scanDTO.getTarget() + " -json -o /home/kali/Results.txt");
+        Process p = Runtime.getRuntime().exec("cmd.exe /c plink kali@192.168.1.10 -pw kali -no-antispoof " +
+                "nuclei -u " + scanDTO.getTarget() + " -j -o /home/kali/Results.txt");
 
         //İşlem kontrolü ve sonlandırma için gerekli
         BufferedReader is = new BufferedReader(
                 new InputStreamReader(p.getInputStream()));
         String line;
         while ((line = is.readLine()) != null){}
-*/
+
         resultService.saveResults(scanDTO, scanEntity);
     }
 
@@ -55,7 +54,7 @@ public class ScanService
     }
 
 
-    public List<ScanDTO> getAllScanDTOs() {
+    public List<ScanDTO> getAllScans() {
         Iterable<ScanEntity> scanEntityIterable = scanRepository.findAll();
         return StreamSupport.stream(scanEntityIterable.spliterator(), false)
                 .map(scanEntity -> new ScanDTO(scanEntity))
@@ -68,4 +67,7 @@ public class ScanService
                 .collect(Collectors.toList());
     }
 
+    public void deleteOneScan(Long scanId) {
+        scanRepository.deleteById(scanId);
+    }
 }

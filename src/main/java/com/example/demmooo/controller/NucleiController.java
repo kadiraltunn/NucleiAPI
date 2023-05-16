@@ -19,15 +19,11 @@ import java.util.List;
 public class NucleiController
 {
     private ScanService scanService;
-
     private ResultService resultService;
-
-
     public NucleiController(ScanService scanService, ResultService resultService) {
         this.scanService = scanService;
         this.resultService = resultService;
     }
-
 
     //TARAMA BAŞLATMA
     @PostMapping("/create-nuclei")
@@ -40,32 +36,35 @@ public class NucleiController
     //TÜM TARAMALAR
     @GetMapping("/scans")
     public List<ScanDTO> getAllScans(){
-        return scanService.getAllScanDTOs();
+        return scanService.getAllScans();
     }
-
 
     //TÜM TARAMALAR VE SONUÇLARI
     @GetMapping("scans-with-results")
     public List<ScanWithResultsDTO> getAllScansWithAllResults(){
-        return resultService.getAllScanWithResultsDTOs();
+        return resultService.getAllScanWithResults();
     }
 
-
     //"X" NUMARALI TARAMA VE SONUÇLARI
-    @GetMapping("/results/{scanId}")
+    @GetMapping("/scans/{scanId}")
     public ScanWithResultsDTO getScanWithResults(@PathVariable Long scanId) {
         ScanEntity scanEntity = scanService.getOneScanById(scanId);
         if (scanEntity == null)
             throw new NucleiException();
-        return resultService.getScanWithResultsDTOByScanId(scanId);
+        return resultService.getScanWithResultsByScanId(scanId);
     }
 
     //TÜM SONUÇLAR
     @GetMapping("/results")
     public List<ResultDTO> getAllResults(){
-        return resultService.getAllResultDTOs();
+        return resultService.getAllResults();
     }
 
+    @DeleteMapping("/scans/{scanId}")
+    public ResponseDTO deleteOneScan(@PathVariable Long scanId){
+        scanService.deleteOneScan(scanId);
+        return new ResponseDTO(true);
+    }
 
     @ExceptionHandler(NucleiException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
