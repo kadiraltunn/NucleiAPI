@@ -80,7 +80,7 @@ public class ResultService {
                 "pscp -pw kali kali@192.168.1.10:/home/kali/Results.txt C:\\Users\\qkado\\Desktop\\"});
         p1.waitFor();
 */
-        File f = new File("C:\\Users\\qkado\\Desktop\\Results.txt");
+        File f = new File("DOSYA_KONUMU");
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
             String line;
