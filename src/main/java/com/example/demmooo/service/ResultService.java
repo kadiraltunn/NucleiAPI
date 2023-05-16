@@ -75,10 +75,11 @@ public class ResultService {
 
 
     public void saveResults(ScanDTO scanDTO, ScanEntity scanEntity) throws InterruptedException, IOException {
+        /*
         Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
                 "pscp -pw kali kali@192.168.1.10:/home/kali/Results.txt C:\\Users\\qkado\\Desktop\\"});
         p1.waitFor();
-
+*/
         File f = new File("C:\\Users\\qkado\\Desktop\\Results.txt");
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
@@ -152,8 +153,8 @@ public class ResultService {
                 }
             }
             br.close();
-            p1.destroy();
-            deleteCaches();
+            //p1.destroy();
+            //deleteCaches();
         } catch (IOException io) {
             System.out.println("SFTP sunucusundan dosya okunurken istisna oluştu: " + io.getMessage());
         } catch (Exception e) {
