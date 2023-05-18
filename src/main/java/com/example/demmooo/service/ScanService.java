@@ -1,6 +1,7 @@
 package com.example.demmooo.service;
 
 import com.example.demmooo.dto.ScanDTO;
+import com.example.demmooo.dto.ScanWithResultsDTO;
 import com.example.demmooo.model.ScanEntity;
 import com.example.demmooo.repository.ScanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class ScanService
-{
+public class ScanService {
     private ScanRepository scanRepository;
     private ResultService resultService;
 
@@ -30,11 +30,12 @@ public class ScanService
     }
 
 
-    public void startScanAndCreateScanEntity(ScanDTO scanDTO) throws IOException, InterruptedException {
+    public ScanWithResultsDTO startScanAndCreateScanEntity(ScanDTO scanDTO) throws IOException, InterruptedException {
         ScanEntity scanEntity = new ScanEntity();
         scanEntity.setScanName(scanDTO.getScanName());
         scanEntity.setTarget(scanDTO.getTarget());
-        scanRepository.save(scanEntity);
+        scanEntity = scanRepository.save(scanEntity);
+
 
         Process p = Runtime.getRuntime().exec("cmd.exe /c plink kali@192.168.1.10 -pw kali -no-antispoof " +
                 "nuclei -u " + scanDTO.getTarget() + " -j -o /home/kali/Results.txt");
@@ -43,13 +44,15 @@ public class ScanService
         BufferedReader is = new BufferedReader(
                 new InputStreamReader(p.getInputStream()));
         String line;
-        while ((line = is.readLine()) != null){}
+        while ((line = is.readLine()) != null) {
+        }
 
-        resultService.saveResults(scanDTO, scanEntity);
+
+        return resultService.saveResults(scanEntity);
     }
 
 
-    public ScanEntity getOneScanById(Long scanId){
+    public ScanEntity getOneScanById(Long scanId) {
         return scanRepository.findById(scanId).orElse(null);
     }
 

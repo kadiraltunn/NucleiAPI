@@ -8,8 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Data
-public class ScannedEntity extends BaseEntity{
-
+public class ScannedEntity extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scan_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -20,6 +19,5 @@ public class ScannedEntity extends BaseEntity{
     @JoinColumn(name = "vuln_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ResultEntity resultEntity;
-
 }
 

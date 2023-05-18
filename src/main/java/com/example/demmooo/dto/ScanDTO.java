@@ -17,7 +17,7 @@ public class ScanDTO {
     private String target;
     private String scanName;
 
-    public ScanDTO(ScanEntity scanEntity){
+    public ScanDTO(ScanEntity scanEntity) {
         this.id = scanEntity.getId();
         this.target = scanEntity.getTarget();
         this.scanName = scanEntity.getScanName();

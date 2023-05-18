@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResultDTO
-{
+public class ResultDTO {
     private long id;
     private String name;
     private String type;
@@ -19,7 +18,7 @@ public class ResultDTO
     private String severity;
     private String cwe_id;
 
-    public ResultDTO(ResultEntity resultEntity){
+    public ResultDTO(ResultEntity resultEntity) {
         this.id = resultEntity.getId();
         this.name = resultEntity.getName();
         this.type = resultEntity.getType();

@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ScanRepository extends CrudRepository<ScanEntity, Long> {
+
 }

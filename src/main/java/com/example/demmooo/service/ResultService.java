@@ -51,7 +51,8 @@ public class ResultService {
         List<ResultDTO> resultDTOList = StreamSupport.stream(vulnIds.spliterator(), false)
                 .map(ResultDTO::new)
                 .collect(Collectors.toList());
-        return new ScanWithResultsDTO(scanService.getOneScanById(scanId), resultDTOList);
+        ScanWithResultsDTO scanWithResultsDTO = new ScanWithResultsDTO(scanService.getOneScanById(scanId), resultDTOList);
+        return scanWithResultsDTO;
     }
 
 
@@ -69,12 +70,12 @@ public class ResultService {
     }
 
 
-    public boolean getExistByResultId(Long id){
+    public boolean getExistByResultId(Long id) {
         return resultRepository.existsById(id);
     }
 
 
-    public void saveResults(ScanDTO scanDTO, ScanEntity scanEntity) throws InterruptedException, IOException {
+    public ScanWithResultsDTO saveResults(ScanEntity scanEntity) throws InterruptedException, IOException {
         Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
                 "pscp -pw kali kali@192.168.1.10:/home/kali/Results.txt C:\\Users\\qkado\\Desktop\\"});
         p1.waitFor();
@@ -147,7 +148,7 @@ public class ResultService {
 
                 if (!getExistByResultId(resultEntity.getId()))
                     resultRepository.save(resultEntity);
-                if (!scannedService.getExistByResultIdAndScanId(resultEntity.getId(), scanEntity.getId())){
+                if (!scannedService.getExistByResultIdAndScanId(resultEntity.getId(), scanEntity.getId())) {
                     scannedService.saveScannedEntity(scanEntity, resultEntity);
                 }
             }
@@ -159,6 +160,7 @@ public class ResultService {
         } catch (Exception e) {
             System.out.println("Hata oluştu. " + e.getMessage());
         }
+        return getScanWithResultsByScanId(scanEntity.getId());
     }
 
 

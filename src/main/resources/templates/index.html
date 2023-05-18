@@ -1,11 +1,81 @@
 <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dosya Yükleme Sayfası</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #444;
+        }
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<body id="kt_app_body" data-kt-app-header-fixed-mobile="true" data-kt-app-sidebar-enabled="true"
-      data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
-      data-kt-app-sidebar-push-footer="true" class="app-default">
-<div>
-  <h1>kado</h1>
-</div>
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        form {
+            width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        button[type="reset"] {
+            margin-left: 10px;
+            background-color: #f44336;
+        }
+
+        button[type="reset"]:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+<h1>Nuclei</h1>
+<form class=" w-100 pb-10" novalidate="novalidate" th:action="@{/create-nuclei}" th:object="${scanDTO}" method="post">
+    <label>Gereken Doneleri Giriniz</label>
+    <input type="text" id="scanName" name="scanName" th:field="*{scanName}" placeholder="scan name">
+    <input type="text" id="target" name="target" th:field="*{target}" placeholder="target">
+    <button type="submit">Başlat</button>
+</form>
+<form class=" w-100 pb-10" novalidate="novalidate" th:action="@{/scans}" method="get">
+    <button type="submit">Tüm Taramalar</button>
+</form>
+<form class=" w-100 pb-10" novalidate="novalidate" th:action="@{/results}" method="get">
+    <button type="submit">Tüm Sonuçlar</button>
+</form>
 </body>
 </html>

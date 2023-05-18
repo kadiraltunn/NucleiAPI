@@ -13,22 +13,22 @@ public class ScannedService {
 
     private ScannedRepository scannedRepository;
 
-    public ScannedService( ScannedRepository scannedRepository) {
+    public ScannedService(ScannedRepository scannedRepository) {
         this.scannedRepository = scannedRepository;
     }
 
 
-    public boolean getExistByResultIdAndScanId(Long resultId, Long scanId){
+    public boolean getExistByResultIdAndScanId(Long resultId, Long scanId) {
         return scannedRepository.existsByResultEntityIdAndScanEntityId(resultId, scanId);
     }
 
 
-    public List<ScannedEntity> findScannedEntitiesByScanId(Long id){
+    public List<ScannedEntity> findScannedEntitiesByScanId(Long id) {
         return scannedRepository.findByScanEntityId(id);
     }
 
 
-    public void saveScannedEntity(ScanEntity scanEntity, ResultEntity resultEntity){
+    public void saveScannedEntity(ScanEntity scanEntity, ResultEntity resultEntity) {
         ScannedEntity scannedEntity = new ScannedEntity();
         scannedEntity.setScanEntity(scanEntity);
         scannedEntity.setResultEntity(resultEntity);

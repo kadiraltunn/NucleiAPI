@@ -6,7 +6,6 @@ import lombok.Data;
 @Entity
 @Data
 public class ResultEntity {
-
     @Id
     private long id;
     private String name;
@@ -16,5 +15,4 @@ public class ResultEntity {
     private String description;
     private String severity;
     private String cweId;
-
 }
