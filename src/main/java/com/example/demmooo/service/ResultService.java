@@ -19,11 +19,9 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class ResultService {
-
     private ScanService scanService;
     private ScannedService scannedService;
     private ResultRepository resultRepository;
-
 
     public ResultService(ScannedService scannedService, ResultRepository resultRepository) {
         this.scannedService = scannedService;
@@ -34,7 +32,6 @@ public class ResultService {
     public void setScanService(ScanService scanService) {
         this.scanService = scanService;
     }
-
 
     public ScanWithResultsDTO getScanWithResultsByScanId(Long scanId) {
         List<ScannedResponseDTO> scannedResponseDTOList = scannedService
@@ -51,10 +48,10 @@ public class ResultService {
         List<ResultDTO> resultDTOList = StreamSupport.stream(vulnIds.spliterator(), false)
                 .map(ResultDTO::new)
                 .collect(Collectors.toList());
-        ScanWithResultsDTO scanWithResultsDTO = new ScanWithResultsDTO(scanService.getOneScanById(scanId), resultDTOList);
+        ScanWithResultsDTO scanWithResultsDTO = new ScanWithResultsDTO(
+                scanService.getOneScanById(scanId), resultDTOList);
         return scanWithResultsDTO;
     }
-
 
     public List<ScanWithResultsDTO> getAllScanWithResults() {
         List<ScanEntity> scanEntityList = scanService.getAllScanEntities();
@@ -62,18 +59,15 @@ public class ResultService {
                 .collect(Collectors.toList());
     }
 
-
     public List<ResultDTO> getAllResults() {
         return StreamSupport.stream(resultRepository.findAll().spliterator(), false)
                 .map(ResultDTO::new)
                 .collect(Collectors.toList());
     }
 
-
     public boolean getExistByResultId(Long id) {
         return resultRepository.existsById(id);
     }
-
 
     public ScanWithResultsDTO saveResults(ScanEntity scanEntity) throws InterruptedException, IOException {
         Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
@@ -162,7 +156,6 @@ public class ResultService {
         }
         return getScanWithResultsByScanId(scanEntity.getId());
     }
-
 
     public void deleteCaches() throws IOException, InterruptedException {
         Process p2 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",

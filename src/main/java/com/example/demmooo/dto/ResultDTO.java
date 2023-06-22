@@ -26,5 +26,4 @@ public class ResultDTO {
         this.severity = resultEntity.getSeverity();
         this.cwe_id = resultEntity.getCweId();
     }
-
 }

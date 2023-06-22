@@ -12,5 +12,4 @@ public class ScannedResponseDTO {
         this.id = scannedEntity.getId();
         this.vulnId = scannedEntity.getResultEntity().getId();
     }
-
 }

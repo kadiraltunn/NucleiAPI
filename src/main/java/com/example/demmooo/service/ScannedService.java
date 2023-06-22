@@ -10,23 +10,19 @@ import java.util.List;
 
 @Service
 public class ScannedService {
-
     private ScannedRepository scannedRepository;
 
     public ScannedService(ScannedRepository scannedRepository) {
         this.scannedRepository = scannedRepository;
     }
 
-
     public boolean getExistByResultIdAndScanId(Long resultId, Long scanId) {
         return scannedRepository.existsByResultEntityIdAndScanEntityId(resultId, scanId);
     }
 
-
     public List<ScannedEntity> findScannedEntitiesByScanId(Long id) {
         return scannedRepository.findByScanEntityId(id);
     }
-
 
     public void saveScannedEntity(ScanEntity scanEntity, ResultEntity resultEntity) {
         ScannedEntity scannedEntity = new ScannedEntity();
