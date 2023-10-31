@@ -37,7 +37,7 @@ public class ScanService {
         Process p = Runtime.getRuntime().exec("cmd.exe /c plink kali@192.168.1.10 -pw kali -no-antispoof " +
                 "nuclei -u " + scanDTO.getTarget() + " -j -o /home/kali/Results.txt");
 
-        //İşlem kontrolü ve sonlandırma için gerekli
+        // for Process term.
         BufferedReader is = new BufferedReader(
                 new InputStreamReader(p.getInputStream()));
         String line;

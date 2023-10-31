@@ -1,13 +1,14 @@
-    Klai Linux,
-    PuTTY,
-kurulu olmalıdır.
+Req.;
+    -> Kali Linux
+    -> PuTTy
 
-Kali Linux üzeridne SSH servisi aktif olmalıdır
-    "         "     Nuclei kurulu olmalıdır.
+Notes;
+    -> Kali Linux üzerinde SSH servisi aktif olmalıdır.
+           "         "     Nuclei kurulu olmalıdır.
 
-Kali Linux'un IP adresi;
-    ScanService
-    ResultService
-kısımlarındaki gerekli yerlere yazılmalıdır.
+    -> Kali Linux IP adresi;
+           ScanService,
+           ResultService,
+       kısımlarında gerekli konumlara yazılmalıdır.
 
-PuTTy ile ilk bağlanma elle yapılmalıdır.
+    -> PuTTy ile Kali Linux bağlantısı ilk olarak manuel yapılmalıdır. (for firewall)
