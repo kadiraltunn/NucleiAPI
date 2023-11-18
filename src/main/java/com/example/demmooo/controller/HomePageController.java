@@ -30,8 +30,10 @@ public class HomePageController {
     @PostMapping("/create-nuclei")
     public String createNuclei(@ModelAttribute("scanDTO") ScanDTO scanDTO, Model model)
             throws IOException, InterruptedException {
-        model.addAttribute("scanResults", scanService.startScanAndCreateScanEntity(scanDTO));
-        return "scan-result";
+        //model.addAttribute("scanResults", scanService.startScanAndCreateScanEntity(scanDTO));
+        long id = scanService.startScanAndCreateScanEntity(scanDTO);
+        model.addAttribute("scanResults", resultService.getScanWithResultsByScanId(id));
+        return "select-scan";
     }
 
     @GetMapping("/scans")
