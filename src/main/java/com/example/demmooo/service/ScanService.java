@@ -28,7 +28,7 @@ public class ScanService {
         this.resultService = resultService;
     }
 
-    public ScanWithResultsDTO startScanAndCreateScanEntity(ScanDTO scanDTO) throws IOException, InterruptedException {
+    public Long startScanAndCreateScanEntity(ScanDTO scanDTO) throws IOException, InterruptedException {
         ScanEntity scanEntity = new ScanEntity();
         scanEntity.setScanName(scanDTO.getScanName());
         scanEntity.setTarget(scanDTO.getTarget());

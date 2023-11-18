@@ -5,7 +5,10 @@
       layout:decorate="~{fragments/layout}">
 <head>
     <title>Scan Results</title>
-    <style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!--<style>
         table {
             border-collapse: collapse;
             width: 50%;
@@ -20,11 +23,21 @@
         th {
             background-color: #f2f2f2;
         }
-    </style>
+    </style>-->
 </head>
 <body>
 <h1>Scans</h1>
-<table>
+<table id="scan-table" class="display">
+    <thead>
+    <tr>
+        <th>Tarama Adı</th>
+        <th>Hedef</th>
+        <th>Detay</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<!--<table>
     <thead>
     <tr>
         <th>Name</th>
@@ -41,6 +54,26 @@
         </td>
     </tr>
     </tbody>
-</table>
+</table>-->
 </body>
+<script>
+    $(document).ready(function () {
+        $('#scan-table').DataTable({
+            "ajax": {
+                "url": "/scansRest",
+                "dataSrc": ""
+            },
+            "columns": [
+                {"data": "scanName"},
+                {"data": "target"},
+                {
+                    "data": null,
+                    "render": function (row) {
+                        return "<a href='/scan/" + row.id + "'>İncele</a>";
+                    }
+                }
+            ]
+        });
+    });
+</script>
 </html>

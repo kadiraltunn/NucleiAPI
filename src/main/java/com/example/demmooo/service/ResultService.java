@@ -73,7 +73,7 @@ public class ResultService {
         saveResults() metodunda, JSON dosyasının (Results.txt) işlenmesi sırasında sıkça karşılaşılan hatalar
         sebebiyle try/catch blokları hata giderici görevi üstlenmiştir.
      */
-    public ScanWithResultsDTO saveResults(ScanEntity scanEntity) throws InterruptedException, IOException {
+    public Long saveResults(ScanEntity scanEntity) throws InterruptedException, IOException {
         Process p1 = Runtime.getRuntime().exec(new String[]{"cmd.exe", "/c",
                 "pscp -pw kali kali@192.168.1.10:/home/kali/Results.txt C:\\Users\\qkado\\Desktop\\"});
         p1.waitFor();
@@ -158,7 +158,8 @@ public class ResultService {
         } catch (Exception e) {
             System.out.println("Hata oluştu. " + e.getMessage());
         }
-        return getScanWithResultsByScanId(scanEntity.getId());
+        //return getScanWithResultsByScanId(scanEntity.getId());
+        return scanEntity.getId();
     }
 
     public void deleteCaches() throws IOException, InterruptedException {

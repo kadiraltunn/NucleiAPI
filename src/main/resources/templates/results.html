@@ -4,8 +4,12 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragments/layout}">
 <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
     <title>Scan Results</title>
-    <style>
+        <!--<style>
         table {
             border-collapse: collapse;
             width: 100%;
@@ -20,11 +24,23 @@
         th {
             background-color: #f2f2f2;
         }
-    </style>
+    </style>-->
 </head>
 <body>
 <h1>Results</h1>
-<table>
+<table id="result-table" class="display">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Severity</th>
+        <th>CWE-ID</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<!--<table>
     <thead>
     <tr>
         <th>ID</th>
@@ -45,6 +61,23 @@
         <td th:text="${result.cwe_id}"></td>
     </tr>
     </tbody>
-</table>
+</table>-->
 </body>
+<script>
+    $(document).ready(function (){
+        $('#result-table').DataTable({
+            "ajax": {
+                "url": "resultsRest",
+                "dataSrc": ""
+            },
+            "columns": [
+                {"data": "name"},
+                {"data": "type"},
+                {"data": "description"},
+                {"data": "severity"},
+                {"data": "cwe_id"}
+            ]
+            });
+    });
+</script>
 </html>

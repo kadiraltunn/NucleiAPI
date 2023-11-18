@@ -4,8 +4,12 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{fragments/layout}">
 <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
     <title>Scan Results</title>
-    <style>
+    <!--<style>
         table {
             border-collapse: collapse;
             width: 100%;
@@ -20,11 +24,15 @@
         th {
             background-color: #f2f2f2;
         }
-    </style>
+    </style>-->
 </head>
 <body>
 <h1>Scan</h1>
-<table>
+<div>
+    <p id="scanName"></p>
+    <p id="target"></p>
+</div>
+<!--<table>
     <thead>
     <tr>
         <th>ID</th>
@@ -39,9 +47,21 @@
         <td th:text="${result.target}"></td>
     </tr>
     </tbody>
-</table>
+</table>-->
 <h1>Scan Results</h1>
-<table>
+<table id="one-scan-table" class="display">
+    <thead>
+    <tr>
+        <th>name</th>
+        <th>type</th>
+        <th>description</th>
+        <th>severity</th>
+        <th>cwe_id</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<!--<table>
     <thead>
     <tr>
         <th>ID</th>
@@ -62,6 +82,42 @@
         <td th:text="${result.cwe_id}"></td>
     </tr>
     </tbody>
-</table>
+</table>-->
 </body>
+<input th:value="${id}" type="hidden" id="scan_id"/>
+
+<script>
+    $(document).ready(function () {
+        var scanId = $("#scan_id").val();
+        $.ajax({
+            url: "/scan-result/" + scanId,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                /*let node = document.createElement("p");
+                const textnode = document.createTextNode(data.scanName);
+                node.appendChild(textnode);
+                document.getElementById("scan").appendChild(node);*/
+                var scanName = data.scanName;
+                var target = data.target;
+                document.getElementById("scanName").innerHTML = scanName;
+                document.getElementById("target").innerHTML = target;
+                $('#one-scan-table').DataTable({
+                    data: data.resultDTOList,
+                    columns: [
+                        {"data": "name"},
+                        {"data": "type"},
+                        {"data": "description"},
+                        {"data": "severity"},
+                        {"data": "cwe_id"},
+                    ]
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error(status, error);
+            }
+        });
+    });
+</script>
 </html>
